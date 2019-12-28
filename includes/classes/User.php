@@ -15,5 +15,9 @@ class User {
         $row = mysqli_fetch_array($query);
         return ucfirst($row['first_name']) . " " . ucfirst($row['last_name']);
     }
+
+    public function getUsername() {
+        return $this->user['username'];
+    }
 }
 ?>

@@ -2,6 +2,8 @@
 include("includes/header.php");
 include("includes/classes/User.php");
 // session_destroy();
+
+$user_obj = new User($con, $userLoggedIn);
 ?>
 
 <div class="user_details column">
@@ -9,7 +11,7 @@ include("includes/classes/User.php");
     <div class="user_details_left_right">
         <a href="<?php echo $userLoggedIn ?>">
             <?php
-                echo $user['first_name'] . " " . $user['last_name'];
+               echo $user_obj->getFullName();
             ?>
         </a>
         <br />
@@ -25,11 +27,6 @@ include("includes/classes/User.php");
         <input type="submit" name="post" id="post_button" value="Post">
         <hr />
     </form>
-
-    <?php
-        $user_obj = new User($con, $userLoggedIn);
-        echo $user_obj->getFullName();
-    ?>
 </div>
 
 </div>
