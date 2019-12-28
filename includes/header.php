@@ -32,7 +32,7 @@ if (isset($_SESSION['username'])) {
             <a href="index.php">SocialNetwork</a>
         </div>
         <nav>
-            <a href="#">
+            <a href="<?php echo $userLoggedIn ?>">
                 <?php echo $user['first_name']; ?>
             </a>
             <a href="index.php"><i class="fa fa-home fa-lg"></i></a>
