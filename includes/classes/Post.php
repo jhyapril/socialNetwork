@@ -11,6 +11,11 @@ class Post {
     public function submitPost($body, $user_to) {
         $body = strip_tags($body); // Removes html tags
         $body = mysqli_real_escape_string($this->con, $body);
+        // replace by match string
+        $body = str_replace('\r\n', '\n', $body);
+        // replace newline with line break \n -> <br/>
+        $body = nl2br($body);
+        // replace using regex
         $check_empty = preg_replace('/\s+/', '', $body); // Deletes all spaces
         if($check_empty != "") {
             // Current date and time
