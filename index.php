@@ -33,6 +33,10 @@ $user_obj = new User($con, $userLoggedIn);
         <input type="submit" name="post" id="post_button" value="Post">
         <hr />
     </form>
+    <?php 
+    $post = new Post($con, $userLoggedIn);
+    $post->loadPostsByFriends();
+    ?>
 </div>
 
 </div>
