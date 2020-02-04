@@ -37,8 +37,22 @@ $user_obj = new User($con, $userLoggedIn);
     $post = new Post($con, $userLoggedIn);
     $post->loadPostsByFriends();
     ?>
+    <img id="#loading" src="assets/images/icons/loading.gif">
 </div>
+<script>
+const userLoggedIn = '<?php echo $userLoggedIn; ?>'
+$(document).ready(function() {
+    $('#loading').show();
 
+    // Original ajax request for loading first posts
+    $.ajax({
+        url: "includes/handlers/ajax_load_posts.php",
+        type: "POST",
+        data: `page=1&userLoggedIn=${userLoggedIn}`,
+        cache: false,
+    })
+})
+</script>
 </div>
 </body>
 
