@@ -41,7 +41,7 @@ class Post {
         }
     }
 
-    public function loadPostsByFriends($data, $limit) {
+    public function loadPostsFriends($data, $limit) {
         $page = $data['page'];
         $userLoggedIn = $this->user_obj->getUsername();
         if ($page == 1) {
@@ -72,42 +72,45 @@ class Post {
                 if ($added_by_obj->isClosed()) {
                     continue;
                 }
-                if ($num_iterations ++ < $start) {
-                    continue;
+                $user_logged_obj = new User($this->con, $userLoggedIn);
+                if ($user_logged_obj->isFriend($added_by)) {
+                    if ($num_iterations ++ < $start) {
+                        continue;
+                    }
+                    // Once $limit posts have been loaded, break
+                    if ($count > $limit) {
+                        break;
+                    } else {
+                        $count ++;
+                    }
+                    $user_details_query = mysqli_query($this->con, "SELECT first_name, last_name, profile_pic FROM users WHERE username='$added_by'");
+                    $user_row = mysqli_fetch_array($user_details_query);
+                    $first_name = $user_row['first_name'];
+                    $last_name = $user_row['last_name'];
+                    $profile_pic = $user_row['profile_pic'];
+                    // Timeframe
+                    $post_date = new DateTime($date_time);
+                    $time_message = $this->getTimeMessage($post_date);
+                    $str .= "<div class='status_post'>
+                                <div class='post_profile_pic'>
+                                    <img src='$profile_pic' width='50'>
+                                </div>
+                                <div class='posted_by' style='color:#ACACAC;'>
+                                    <a href='$added_by'>$first_name $last_name</a> $user_to &nbsp;&nbsp;&nbsp;&nbsp;$time_message
+                                </div>
+                                <div id='post_body'>
+                                    $body
+                                    <br />
+                                </div>
+                            </div>
+                            <hr />";
                 }
-                // Once $limit posts have been loaded, break
-                if ($count > $limit) {
-                    break;
-                } else {
-                    $count ++;
-                }
-                $user_details_query = mysqli_query($this->con, "SELECT first_name, last_name, profile_pic FROM users WHERE username='$added_by'");
-                $user_row = mysqli_fetch_array($user_details_query);
-                $first_name = $user_row['first_name'];
-                $last_name = $user_row['last_name'];
-                $profile_pic = $user_row['profile_pic'];
-                // Timeframe
-                $post_date = new DateTime($date_time);
-                $time_message = $this->getTimeMessage($post_date);
-                $str .= "<div class='status_post'>
-                            <div class='post_profile_pic'>
-                                <img src='$profile_pic' width='50'>
-                            </div>
-                            <div class='posted_by' style='color:#ACACAC;'>
-                                <a href='$added_by'>$first_name $last_name</a> $user_to &nbsp;&nbsp;&nbsp;&nbsp;$time_message
-                            </div>
-                            <div id='post_body'>
-                                $body
-                                <br />
-                            </div>
-                        </div>
-                        <hr />";
             }
             if ($count > $limit) {
                 $str .= "<input type='hidden' class='nextPage' value='" . ($page+1) . "'>
-                    <input type='hidden' class='noMOrePosts' value='false'>";
+                    <input type='hidden' class='noMorePosts' value='false'>";
             } else {
-                $str .= "<input type='hidden' class='noMOrePosts' value='true'><p style='text-align: centre;'> No more posts to show. </p>";
+                $str .= "<input type='hidden' class='noMorePosts' value='true'><p style='text-align: centre;'> No more posts to show. </p>";
             }
         }
         echo $str;
